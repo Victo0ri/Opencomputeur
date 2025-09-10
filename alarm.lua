@@ -13,7 +13,7 @@ local function SetBig(sides, value) -- Set the big alarm (Emergency)
     return result
 end
 
-local function setSmall(sides, value) -- Set the small alarm (Warning)
+local function SetSmall(sides, value) -- Set the small alarm (Warning)
     local result = rs.setOutput(sides, value)
     return result
 end
