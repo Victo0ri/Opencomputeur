@@ -8,16 +8,15 @@ local function inputB(sides, colors) -- Get the input from the bundle
     return result
 end
 
-local function GetBig(sides, value) -- Set the big alarm (Emergency)
+local function SetBig(sides, value) -- Set the big alarm (Emergency)
     local result = rs.setOutput(sides, value)
     return result
 end
 
-local function GetSmall(sides, value) -- Set the small alarm (Warning)
+local function setSmall(sides, value) -- Set the small alarm (Warning)
     local result = rs.setOutput(sides, value)
     return result
 end
-
 
 while true do
 
