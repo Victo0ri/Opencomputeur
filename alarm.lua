@@ -3,8 +3,8 @@ local sides = require("sides")
 local colors = require("colors")
 local rs = component.redstone
 
-local function inputB(sides) -- Get the input from the bundle
-    local result = rs.getBundledInput(sides)
+local function inputB(sides, colors) -- Get the input from the bundle
+    local result = rs.getBundledInput(sides, colors)
     return result
 end
 
@@ -18,19 +18,24 @@ local function SetSmall(sides, value) -- Activate the alarm (Warning)
     return result
 end
 
-local function GetBig --Get the information alarm (Emergency)
-    if inputB(sides.north, colors.0) > 1 . inputB(sides.north, color.5)
-        SetBig
+local function GetBig() --Get the information alarm (Emergency)
+    if inputB(sides.north, 0) > 1 or inputB(sides.north, 5) > 1 then
+        SetBig()
     else
         
+    end
 end
 
 local function GetSmall(sides, value) -- Get the information alarm (Warning)
-    if inputB(sides.north, colors.15) > 1 . inputB(sides.north, colors.4)
+    if inputB(sides.north, 15) > 1 or inputB(sides.north, 4) > 1 then
+        SetSmall()
+    else
+        
+    end
+end
 
 while true do
 
     term.clear()
-
 
 end
