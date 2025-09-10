@@ -15,29 +15,13 @@ local function inputB(sides, colors) -- Get the input from the bundle
     return result
 end
 
---[[local function SetBig(sides, value) -- Activate the alarm (Emergency)
+local function SetBig(sides, value) -- Activate the alarm (Emergency)
     rs.setOutput(sides, value)
 end
 
 local function SetSmall(sides, value) -- Activate the alarm (Warning)
     rs.setOutput(sides, value)
-    end
-
-local function GetBig() --Get the information from the bundle (Emergency)
-    if inputB(sides.north, 0) > 1 or inputB(sides.north, 5) > 1 then
-        SetBig(sides.)
-    else
-        
-    end
 end
-
-local function GetSmall(sides, value) -- Get the information from the bundle (Warning)
-    if inputB(sides.north, 15) > 1 or inputB(sides.north, 4) > 1 then
-        SetSmall()
-    else
-        
-    end
-end]]--
 
 while true do
 ------------------------Set the colors-------------------------------------------------------------
@@ -63,6 +47,12 @@ local yellow = inputB(sides.south, colors.yellow)
 
     if yellow > 1 then
         print("\n! Warning !\nAlarme from passive production !")
+    end
+
+    if white > 1 or lime > 1 then
+        SetBig(sides.north, 15)
+    elseif black > 1 or yellow > 1 then
+        SetSmall(sides.east, 15)
     end
 
     os.sleep(2)
