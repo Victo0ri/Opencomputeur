@@ -1,10 +1,11 @@
 local component = require("component")
-local sides = require("sides")
-local colors = require("colors")
-local term = require("term")
-local keyboard = require("keyboard")
-local event = require("event")
-local internet = require("internet")
+local sides     = require("sides")
+local colors    = require("colors")
+local term      = require("term")
+local keyboard  = require("keyboard")
+local event     = require("event")
+local internet  = require("internet")
+
 local rs = component.redstone
 
 ------------------------Exit function--------------------------------------------------------------
@@ -32,7 +33,7 @@ local function send(msg)
     for chunk in internet.request(url) do end
 end
 
-------------------------blinking light-------------------------------------------------------------
+------------------------Blinking light-------------------------------------------------------------
 
 local blinkTimer = nil
 local state = false
@@ -84,7 +85,7 @@ while true do
     -------------------------Alarm message----------------------------------------------------
 
     local Cleanroom = ("\n/!\\ Emergency /!\\\nAlarme from Cleanroom !")
-    local Intensive_prod = ("\n/!\\ Emergency /!\\\nAlarme from intensive production !")
+    local Benzene_crit = ("\n/!\\ Emergency /!\\\nAlarme from Benzene tank : Critical level reached !")
 
     -------------------------Display on the screen--------------------------------------------
 
@@ -99,8 +100,8 @@ while true do
         signal_white = 0
     end
 
-    if lime > 1 then -- intensive process
-        print(Intensive_prod)
+    if lime > 1 then -- Tank level of Benzene : critical
+        print(Benzene_crit)
         signal_lime = 1
     else
         signal_lime = 0
@@ -110,8 +111,8 @@ while true do
         print("\n! Warning !\nAlarme from Benzene production !")
     end
 
-    if yellow > 1 then -- passive process
-        print("\n! Warning !\nAlarme from passive production !")
+    if yellow > 1 then -- Tank level of Benzene : half
+        print("\n! Warning !\nAlarme from Benzene tank : Average level reached !")
     end
 
     -------------------------Message states---------------------------------------------------
@@ -124,7 +125,7 @@ while true do
     end
 
     if signal_lime == 1 and send_lime ~= 1 then
-        send(Intensive_prod)
+        send(Benzene_crit)
         send_lime = 1
     elseif signal_lime == 0 and send_lime == 1 then
         send_lime = 0
@@ -142,9 +143,9 @@ while true do
         rs.setOutput(sides.north, 0)
     else -- Turn OFF all alarm
         SetBig(sides.north, 0)
+        stopBlink()
         SetSmall(sides.east, 0)
         rs.setOutput(sides.top, 0)
-        stopBlink()
     end
 
     -------------------------Exit-------------------------------------------------------------
