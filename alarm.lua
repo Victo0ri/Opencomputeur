@@ -33,6 +33,12 @@ local function send(msg)
     for chunk in internet.request(url) do end
 end
 
+------------------------Light control----------------------------------------------------------------
+
+local function light(sides, value)
+    rs.setOutput(sides, value)
+end
+
 ------------------------Blinking light-------------------------------------------------------------
 
 local blinkTimer = nil
@@ -64,14 +70,13 @@ end
 
 local function SetBig(sides, value) -- Activate the alarm (Emergency)
     rs.setOutput(sides, value)
-    startBlink()
 end
 
 local function SetSmall(sides, value) -- Activate the alarm (Warning)
     rs.setOutput(sides, value)
 end
 
-------------------------Systheme loop--------------------------------------------------------------
+------------------------Systeme loop---------------------------------------------------------------
 
 while true do
 
@@ -85,7 +90,7 @@ while true do
     -------------------------Alarm message----------------------------------------------------
 
     local Cleanroom = ("\n/!\\ Emergency /!\\\nAlarme from Cleanroom !")
-    local Benzene_crit = ("\n/!\\ Emergency /!\\\nAlarme from Benzene tank : Critical level reached !")
+    local Control_crit = ("\n/!\\ Emergency /!\\\nAlarme from Tank level control : Critical level reached !")
 
     -------------------------Display on the screen--------------------------------------------
 
@@ -100,8 +105,8 @@ while true do
         signal_white = 0
     end
 
-    if lime > 1 then -- Tank level of Benzene : critical
-        print(Benzene_crit)
+    if lime > 1 then -- Tank level control : critical level
+        print(Control_crit)
         signal_lime = 1
     else
         signal_lime = 0
@@ -111,8 +116,8 @@ while true do
         print("\n! Warning !\nAlarme from Benzene production !")
     end
 
-    if yellow > 1 then -- Tank level of Benzene : half
-        print("\n! Warning !\nAlarme from Benzene tank : Average level reached !")
+    if yellow > 1 then -- Tank level control : half
+        print("\n! Warning !\nAlarme from Tank level control : Average level reached !")
     end
 
     -------------------------Message states---------------------------------------------------
@@ -125,27 +130,29 @@ while true do
     end
 
     if signal_lime == 1 and send_lime ~= 1 then
-        send(Benzene_crit)
+        send(Control_crit)
         send_lime = 1
     elseif signal_lime == 0 and send_lime == 1 then
         send_lime = 0
     end
 
-    -------------------------Alarm states-----------------------------------------------------
+    -------------------------Alarm & light state----------------------------------------------
 
     if white > 1 or lime > 1 then -- Turn ON the big alarm
         SetBig(sides.north, 15)
         SetSmall(sides.east, 0)
+        startBlink()
+        light(sides.top, 0)
     elseif black > 1 or yellow > 1 then -- Turn ON the small alarm
-        stopBlink()
+        SetBig(sides.north, 0)
         SetSmall(sides.east, 15)
-        rs.setOutput(sides.top, 15)
-        rs.setOutput(sides.north, 0)
+        stopBlink()
+        light(sides.top, 15)
     else -- Turn OFF all alarm
         SetBig(sides.north, 0)
-        stopBlink()
         SetSmall(sides.east, 0)
-        rs.setOutput(sides.top, 0)
+        stopBlink()
+        light(sides.top, 0)
     end
 
     -------------------------Exit-------------------------------------------------------------
@@ -153,6 +160,10 @@ while true do
     if keyboard.isShiftDown() and keyboard.isControlDown() then
         signal_white = 0
         signal_lime = 0
+        SetBig(sides.north, 0)
+        SetSmall(sides.east, 0)
+        stopBlink()
+        light(sides.top, 0)
         break
     end
 
