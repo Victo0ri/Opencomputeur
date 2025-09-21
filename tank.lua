@@ -15,13 +15,6 @@ local function Exit()
     os.exit()
 end
 
-------------------------Redstone I/O function------------------------------------------------------
-
-local function inputB(sides, colors)
-    local result = rs.getBundledInput(sides, colors)
-    return result
-end
-
 ------------------------Set proxy------------------------------------------------------------------
 
 local REDSTONE_TANK = "996b73d3"
